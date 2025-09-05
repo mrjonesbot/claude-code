@@ -6,32 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Product Heist is a Ruby on Rails 8.0.1 application for interior designers to help manage their product library, specification and construction workflows. It uses PostgreSQL for data persistence, Hotwire (Turbo & Stimulus) for frontend interactivity, and Tailwind CSS for styling.
 
-## Common Development Commands
+## Visual Development
 
-### Server & Development
-- Start development server: `bin/rails server` or `bin/dev` (includes Tailwind CSS watch)
-- Rails console: `bin/rails console`
-- Database console: `bin/rails db`
+### Design Principles
+- Comprehensive design checklist in `/context/design-principles.md`
+- Brand style guide in `/context/style-guide.md`
+- When making visual (front-end, UI/UX) changes, always refer to these files for guidance
 
-### Testing
-- Run all tests: `bin/rails parallel:spec`
-- bin/rails "parallel:test[^test/unit]" # every test file in test/unit folder
-- bin/rails "parallel:test[user]"  # run users_controller + user_helper + user tests
-- bin/rails "parallel:test['user|product']"  # run user and product related tests
-- bin/rails "parallel:spec['spec\/(?!features)']" # run RSpec tests except the tests in spec/features
+### Quick Visual Check
+IMMEDIATELY after implementing any front-end change:
+1. **Identify what changed** - Review the modified components/pages
+2. **Navigate to affected pages** - Use `mcp__playwright__browser_navigate` to visit each changed view
+3. **Verify design compliance** - Compare against `/context/design-principles.md` and `/context/style-guide.md`
+4. **Validate feature implementation** - Ensure the change fulfills the user's specific request
+5. **Check acceptance criteria** - Review any provided context files or requirements
+6. **Capture evidence** - Take full page screenshot at desktop viewport (1440px) of each changed view
+7. **Check for errors** - Run `mcp__playwright__browser_console_messages`
 
-### Code Quality
-- Run RuboCop linter: `bundle exec rubocop`
-- Auto-fix RuboCop issues: `bundle exec rubocop -a`
+This verification ensures changes meet design standards and user requirements.
 
-### Asset Management
-- Precompile assets: `bin/rails assets:precompile`
-- Clean old assets: `bin/rails assets:clean`
-- Watch Tailwind CSS changes: `bin/rails tailwindcss:watch`
-
-### Background Jobs
-- Start Solid Queue worker: `bin/rails solid_queue:start`
-- Access job dashboard: Visit `/jobs` in browser (Mission Control)
+### Comprehensive Design Review
+Invoke the `@agent-design-review` subagent for thorough design validation when:
+- Completing significant UI/UX features
+- Before finalizing PRs with visual changes
 
 ## Architecture Overview
 
@@ -100,6 +97,33 @@ The application uses service objects for complex operations:
 - Use `system_spec_helper` by default
 - Include `js: true` for JavaScript interactions
 - Use `_url` helpers instead of `_path`
+
+## Common Development Commands
+
+### Server & Development
+- Start development server: `bin/rails server` or `bin/dev` (includes Tailwind CSS watch)
+- Rails console: `bin/rails console`
+- Database console: `bin/rails db`
+
+### Testing
+- Run all tests: `bin/rails parallel:spec`
+- bin/rails "parallel:test[^test/unit]" # every test file in test/unit folder
+- bin/rails "parallel:test[user]"  # run users_controller + user_helper + user tests
+- bin/rails "parallel:test['user|product']"  # run user and product related tests
+- bin/rails "parallel:spec['spec\/(?!features)']" # run RSpec tests except the tests in spec/features
+
+### Code Quality
+- Run RuboCop linter: `bundle exec rubocop`
+- Auto-fix RuboCop issues: `bundle exec rubocop -a`
+
+### Asset Management
+- Precompile assets: `bin/rails assets:precompile`
+- Clean old assets: `bin/rails assets:clean`
+- Watch Tailwind CSS changes: `bin/rails tailwindcss:watch`
+
+### Background Jobs
+- Start Solid Queue worker: `bin/rails solid_queue:start`
+- Access job dashboard: Visit `/jobs` in browser (Mission Control)
 
 ## External Integrations
 
