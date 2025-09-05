@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Product Heist is a Ruby on Rails 8.0.1 application for interior designers to help manage their product library, specification and construction workflows. It uses PostgreSQL for data persistence, Hotwire (Turbo & Stimulus) for frontend interactivity, and Tailwind CSS for styling.
+[MY APPLICATION] is a Ruby on Rails 8.0.1 application for [DESCRIBE BUSINESS USE CASE]. It uses PostgreSQL for data persistence, Hotwire (Turbo & Stimulus) for frontend interactivity, and [CSS FRAMEWORK] for styling.
 
 ## Visual Development
 
