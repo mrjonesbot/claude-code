@@ -76,11 +76,20 @@ The application uses service objects for complex operations:
 - Stick to RESTful actions
 - Delegate authorization to policy objects
 - Keep controllers thin
+- Use service objects to capture/abstract logic that would otherwise bloat controllers and don't align with just one model
 
 ### Service & Business Objects
 - Implement `#call` or `#run` as primary interface
 - Return Result objects with success/failure states
 - Document complex operations with examples
+
+### Views
+- Any javascript needed in the view layer (html.erb), should implement a Stimulus controller to house that behavior (app/javascript/controllers)
+
+### Service & Business Objects
+● Implement `#call` or `#run` as primary interface
+● Return Result objects with success/failure states
+● Document complex operations with examples
 
 ### Testing Philosophy
 - Use real objects by default in tests
