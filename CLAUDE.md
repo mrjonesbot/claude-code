@@ -1,13 +1,13 @@
 # Global CLAUDE.md
 
-Shared instructions for all Rails projects. Project-specific details live in each repo's `CLAUDE.md`.
+Shared instructions for all projects. Project-specific details live in each repo's `CLAUDE.md`.
 
 ## Core Principles
 
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
-- **Performance Awareness**: Proactively consider whether new features or changes could degrade performance — memory spikes, N+1 queries, unbounded result sets, or large in-memory collections. Refer to `~/.claude/context/patterns/memory-safe-exports.md` for established patterns.
+- **Performance Awareness**: Proactively consider performance impact — memory spikes, N+1 queries, unbounded result sets. Refer to `~/.claude/context/patterns/memory-safe-exports.md`.
 
 ## Workflow Orchestration
 
@@ -23,136 +23,82 @@ Shared instructions for all Rails projects. Project-specific details live in eac
 - For complex problems, throw more compute at it via subagents
 - One task per subagent for focused execution
 
-### 3. Self-Improvement Loop
-- After ANY correction from the user: update `tasks/lessons.md` with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
-
-### 4. Verification Before Done
+### 3. Verification Before Done
 - Never mark a task complete without proving it works
 - Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
+- For non-trivial changes: pause and ask "is there a more elegant way?"
 - Run tests, check logs, demonstrate correctness
 
-### 5. Demand Elegance (Balanced)
-- For non-trivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes — don't over-engineer
-- Challenge your own work before presenting it
-
-### 6. Autonomous Bug Fixing
+### 4. Autonomous Bug Fixing
 - When given a bug report: just fix it. Don't ask for hand-holding
 - Point at logs, errors, failing tests — then resolve them
 - Zero context switching required from the user
-- Go fix failing CI tests without being told how
+
+### 5. Auto-Branch, Commit & PR on Completion
+- When work is **complete and verified**, immediately:
+  1. If on `main`, create a descriptive branch (`fix/…`, `feat/…`, `chore/…`) and switch to it
+  2. Stage and commit all changes with a clear commit message
+  3. Push the branch and open a PR via `gh pr create`
+- Do NOT wait for the user to ask — shipping the PR is part of completing the task
+- Follow all commit/PR formatting rules (HEREDOC messages, Co-Authored-By, summary + test plan)
+
+### 6. Visual Iteration Protocol
+- When given a screenshot with feedback: make changes, then take a new screenshot to verify
+- After 3+ rounds on the same element, stop — re-read the full context, consider the element holistically, and make one comprehensive fix
+- Always reference `~/.claude/context/design-principles.md` and `/context/style-guide.md` for visual work
+
+### 7. Plan Execution Protocol
+- When given "Implement the following plan:": treat each deliverable as a discrete item
+- Verify each item works before moving to the next
+- No scope creep — implement exactly what the plan says, nothing more
+- If a plan item is ambiguous, re-read the plan context before guessing
+
+### 8. Error Triage Protocol
+- Read the FULL error message/stack trace before acting
+- Detect whether this is the same error recurring or a new one
+- After 2 failed fix attempts on the same error: stop, re-diagnose from scratch, consider a different approach entirely
+- Never weaken assertions or silence errors to make tests pass
+
+### 9. Context Restore Protocol
+- After `/clear` or context loss: autonomously reconstruct context from `git log --oneline -10`, `git diff`, `git branch`, and `tasks/todo.md`
+- Never ask "where were we?" — figure it out from project state
+
+### 10. Commit Cadence
+- Commit after each logically complete change, not after the whole feature
+- Each commit should be independently meaningful and pass tests
+- This creates better git history and safer rollback points
 
 ## Task Management
 
-1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `tasks/todo.md`
-6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+- Write plan to `tasks/todo.md` with checkable items. Mark items complete as you go.
+- After corrections from the user, update `tasks/lessons.md` with what went wrong and the pattern to follow.
 
 ## Visual Development
 
-When making visual (front-end, UI/UX) changes, refer to these context files:
+When making visual changes, refer to:
 - `~/.claude/context/design-principles.md` — design checklist, layout patterns, component specs
-- `/context/style-guide.md` — brand color tokens, button classes, form controls (source of truth for colors; **project-specific**)
+- `/context/style-guide.md` — brand color tokens, button classes, form controls (**project-specific**)
 - `~/.claude/context/patterns.md` — reusable MVC patterns (tabs, typeahead, filters, enumerations)
-- `~/.claude/context/workflow.md` — browser tools (cmux in cmux terminal, Playwright MCP in tmux), visual check steps, design review process
-
-Always follow established patterns for consistency across the application.
+- `~/.claude/context/workflow.md` — browser tools, visual check steps, design review process
 
 ## Background Job & Data Processing
 
-When building or modifying CSV exports, data imports, or any background job that handles medium-to-large datasets, refer to:
-- `~/.claude/context/patterns/memory-safe-exports.md` — disk-backed tempfile patterns, Export model with S3 upload, streaming HTTP responses, query caching, SQL-side filtering
+Refer to `~/.claude/context/patterns/memory-safe-exports.md` for all data processing patterns.
 
-All export jobs MUST follow the established Export model pattern (stream to tempfile → attach to S3 → email download link). Never use `CSV.generate` or email file attachments for exports.
-
-### Performance & Memory Guidelines
-
-Before implementing features that touch datasets, collections, or batch operations, consider performance impact. Refer to `~/.claude/context/patterns/memory-safe-exports.md` for detailed patterns. Key principles:
-
-- Batch large queries (`find_each`/`in_batches`), don't load unbounded result sets
-- Stream large payloads to disk rather than building in memory
-- Push filtering, counts, and aggregations to SQL
-- Eager-load associations to avoid N+1s, but scope the base query first
-- Paginate or limit results in controller actions (dashboards, reports, search)
+All export jobs MUST follow the Export model pattern (stream to tempfile → attach to S3 → email download link). Never use `CSV.generate` or email file attachments for exports.
 
 ## Development Standards
 
-### Models
-- Focus on data persistence and validation
-- Use service objects for complex business logic
-- Avoid complex callbacks
-- **CRITICAL**: Before writing database queries with ActiveRecord, ALWAYS check `db/schema.rb` to verify the exact column names available on the table. Do not assume column names based on model methods (e.g., `full_name` might be a method, not a column)
+- **CRITICAL**: Before writing ActiveRecord queries, ALWAYS check `db/schema.rb` to verify exact column names. Do not assume column names from model methods.
+- **CRITICAL**: When adding a new controller action, you MUST add the corresponding authorization method to the policy file (e.g., `new_participant` action requires `new_participant?` in the policy).
+- Views: Any javascript in `.html.erb` should use a Stimulus controller (`app/javascript/controllers`).
 
-### Controllers
-- Stick to RESTful actions
-- Delegate authorization to policy objects
-- Keep controllers thin
-- Use service objects to capture/abstract logic that would otherwise bloat controllers and don't align with just one model
-- **CRITICAL**: When adding a new controller action, you MUST also add the corresponding authorization method to the policy file (e.g., `new_participant` action requires `new_participant?` method in the policy)
+## Testing Commands
 
-### Service & Business Objects
-- Implement `#call` or `#run` as primary interface
-- Return Result objects with success/failure states
-- Document complex operations with examples
-
-### Views
-- Any javascript needed in the view layer (html.erb), should implement a Stimulus controller to house that behavior (app/javascript/controllers)
-
-### Testing Philosophy
-- Use real objects by default in tests
-- WebMock for external HTTP calls
-- Follow RSpec conventions for different test types (request, system, policy specs)
-- Shared examples for common behaviors
-
-### Request Specs
-- Test HTTP-level behavior only
-- Always test authenticated and unauthenticated states
-- Use webmock helpers for API stubbing
-
-### System Specs
-- Use `system_spec_helper` by default
-- Include `js: true` for JavaScript interactions
-- Use `_url` helpers instead of `_path`
-
-## Common Development Commands
-
-### Server & Development
-- Start development server: `bin/rails server` or `bin/dev` (includes Tailwind CSS watch)
-- Rails console: `bin/rails console`
-- Database console: `bin/rails db`
-
-### Testing
-- Run all tests: `bin/rails parallel:spec`
-- bin/rails "parallel:test[^test/unit]" # every test file in test/unit folder
-- bin/rails "parallel:test[user]"  # run users_controller + user_helper + user tests
-- bin/rails "parallel:test['user|product']"  # run user and product related tests
-- bin/rails "parallel:spec['spec\/(?!features)']" # run RSpec tests except the tests in spec/features
-
-### Code Quality
-- Run RuboCop linter: `bundle exec rubocop`
-- Auto-fix RuboCop issues: `bundle exec rubocop -a`
-
-### Asset Management
-- Precompile assets: `bin/rails assets:precompile`
-- Clean old assets: `bin/rails assets:clean`
-- Watch Tailwind CSS changes: `bin/rails tailwindcss:watch`
-
-### Background Jobs
-- Start Solid Queue worker: `bin/rails solid_queue:start`
-- Access job dashboard: Visit `/jobs` in browser (Mission Control)
-
-## Deployment
-
-- Platform: Fly.io (configured in `fly.toml`)
-- Container: Docker (see `Dockerfile`)
-- Production database: PostgreSQL
-- Background job processor: Solid Queue
-- File storage: AWS S3
+```
+bin/rails parallel:spec                              # all specs
+bin/rails "parallel:spec['spec\/(?!features)']"      # specs except features
+bin/rails "parallel:test[^test/unit]"                 # test files in test/unit
+bin/rails "parallel:test[user]"                       # user-related tests
+bin/rails "parallel:test['user|product']"             # user + product tests
+```
