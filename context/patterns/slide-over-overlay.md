@@ -13,8 +13,10 @@ A slide-over panel pattern that renders content in a right-anchored overlay usin
 The application layout includes an empty `turbo_frame_tag "overlay"` anchor. When a link with `data-turbo-frame="overlay"` is clicked, Turbo fetches the target URL and swaps the response into this frame — rendering the slide-over on top of the current page without navigation.
 
 Closing works two ways:
-1. **X button**: Links to `close_overlay_url`, which renders an empty `overlay` frame, clearing the content
+1. **X button**: Links to `close_overlay_path` with `data: { turbo_frame: 'overlay' }`, which fetches an empty `overlay` frame and clears the content in-place
 2. **Turbo Stream**: After a form submission, a `turbo_stream.replace("overlay")` swaps in the empty `close_overlay` partial
+
+**Important:** The close link in `_overlay.html.erb` must include `data: { turbo_frame: 'overlay' }` and use `close_overlay_path` (not `_url`). Without the turbo frame target, the link performs a full page navigation to `/close_overlay` instead of closing the overlay in-place.
 
 ## Structure
 
@@ -204,5 +206,21 @@ The `_close_overlay` partial simply renders an empty turbo frame, which replaces
 <%= turbo_stream.replace("overlay", partial: 'actions/close_overlay') %>
 <%= turbo_stream.replace "resource_list" do %>
   <%= render 'resource_list' %>
+<% end %>
+```
+
+**Don't:** Use `close_overlay_url` or omit the turbo frame target on the close link
+```erb
+<!-- Bad - navigates to /close_overlay as a full page load -->
+<%= link_to close_overlay_url, class: 'text-gray-400 hover:text-gray-500' do %>
+  <%= image_tag 'x.svg', size: '24x24' %>
+<% end %>
+```
+
+**Do:** Use `close_overlay_path` with explicit `turbo_frame: 'overlay'`
+```erb
+<!-- Good - replaces the overlay frame in-place, no navigation -->
+<%= link_to close_overlay_path, data: { turbo_frame: 'overlay' }, class: 'text-gray-400 hover:text-gray-500' do %>
+  <%= image_tag 'x.svg', size: '24x24' %>
 <% end %>
 ```

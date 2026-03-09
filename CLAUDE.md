@@ -36,10 +36,10 @@ Shared instructions for all projects. Project-specific details live in each repo
 
 ### 5. Auto-Branch, Commit & PR on Completion
 - When work is **complete and verified**, immediately:
-  1. If on `main`, create a descriptive branch (`fix/…`, `feat/…`, `chore/…`) and switch to it
-  2. Stage and commit all changes with a clear commit message
-  3. Push the branch and open a PR via `gh pr create`
-- Do NOT wait for the user to ask — shipping the PR is part of completing the task
+  1. Stage and commit all changes with a clear commit message
+  2. Push the branch
+  3. **Only if on `main`**: create a descriptive branch (`fix/…`, `feat/…`, `chore/…`), switch to it, and open a PR via `gh pr create`
+  4. **If on a feature branch**: assume we're adding to existing work — just commit and push. Do NOT create a new branch or PR.
 - Follow all commit/PR formatting rules (HEREDOC messages, Co-Authored-By, summary + test plan)
 
 ### 6. Visual Iteration Protocol
