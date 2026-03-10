@@ -209,6 +209,57 @@ The `_close_overlay` partial simply renders an empty turbo frame, which replaces
 <% end %>
 ```
 
+## Accessibility
+
+The overlay uses an `overlay` Stimulus controller (`app/javascript/controllers/overlay_controller.js`) that provides full keyboard and screen reader support.
+
+### ARIA Attributes (built into `_overlay.html.erb`)
+- `role="dialog"` and `aria-modal="true"` on the container
+- `aria-labelledby="slide-over-title"` pointing to the `<h2>` header
+- `aria-label="Close"` on the close button link
+- `alt="Close"` on the close button image
+
+### Keyboard Handling (provided by `overlay_controller.js`)
+- **Escape**: Closes the overlay by navigating to `close_overlay_path` via Turbo Frame
+- **Tab / Shift+Tab**: Focus is trapped within the overlay — cycling through focusable elements without escaping to the background page
+- **Backdrop click**: Clicking the semi-transparent backdrop closes the overlay
+
+### Focus Management
+- **On open**: First focusable element inside the overlay receives focus automatically
+- **On close**: Focus returns to the element that triggered the overlay (the link/button that was focused before the overlay opened)
+
+### Stimulus Controller Values
+- `data-overlay-close-url-value`: URL for closing the overlay (should be `close_overlay_path`)
+
+### How It's Wired
+
+The overlay panel div connects the controller and passes the close URL:
+
+```erb
+<div class="pointer-events-auto relative w-screen <%= size %>"
+     style="transform: translateX(100%)"
+     data-controller="overlay"
+     data-overlay-close-url-value="<%= close_overlay_path %>">
+```
+
+The backdrop div has a click action for dismiss:
+
+```erb
+<div class="fixed inset-0 bg-gray-500/75 transition-opacity"
+     data-action="click->overlay#backdropClose"></div>
+```
+
+The close button has both `aria-label` and `alt` text:
+
+```erb
+<%= link_to close_overlay_path,
+    data: { turbo_frame: 'overlay' },
+    class: 'text-gray-400 hover:text-gray-500 transition-colors',
+    aria: { label: 'Close' } do %>
+  <%= image_tag 'x.svg', size: '24x24', alt: 'Close' %>
+<% end %>
+```
+
 **Don't:** Use `close_overlay_url` or omit the turbo frame target on the close link
 ```erb
 <!-- Bad - navigates to /close_overlay as a full page load -->
