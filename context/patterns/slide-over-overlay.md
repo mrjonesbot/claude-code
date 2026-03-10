@@ -65,7 +65,11 @@ get '/close_overlay', to: 'actions#close_overlay', as: :close_overlay
 ```ruby
 # app/controllers/actions_controller.rb
 class ActionsController < ApplicationController
-  def close_overlay; end
+  skip_after_action :track_ahoy_visit, only: :close_overlay, raise: false
+
+  def close_overlay
+    render layout: false
+  end
 end
 ```
 
