@@ -93,6 +93,24 @@ All export jobs MUST follow the Export model pattern (stream to tempfile → att
 - **CRITICAL**: When adding a new controller action, you MUST add the corresponding authorization method to the policy file (e.g., `new_participant` action requires `new_participant?` in the policy).
 - Views: Any javascript in `.html.erb` should use a Stimulus controller (`app/javascript/controllers`).
 
+## Internationalization (i18n)
+
+**CRITICAL**: When making ANY copy changes to locale files:
+
+1. **Check for other supported locales**: If the project has multiple locale files (e.g., `en.yml`, `es.yml`, `ar.yml`, `pl.yml`, `tl.yml`, `zh.yml`), ALL locales must be updated
+2. **Update existing translations**: If modifying copy in `en.yml`, update the corresponding keys in all other locale files
+3. **Add new translations**: If adding new copy/keys to `en.yml`, add translated versions to all other locale files
+4. **Never leave locales incomplete**: Do not commit changes that only update `en.yml` — all supported locales must have translations
+
+**Workflow for locale changes:**
+- Make change to `en.yml` first
+- Identify all other locale files in `config/locales/`
+- Use AI translation to generate accurate translations for each locale
+- Verify translations maintain context and tone
+- Update all locale files in the same commit
+
+**Exception**: Project-specific locale files (e.g., `nestingbird/config/locales/`) may have different supported languages than global context. Check the project's actual locale files, not assumptions.
+
 ## Testing Commands
 
 ```
