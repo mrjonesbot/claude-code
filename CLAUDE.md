@@ -87,6 +87,19 @@ Refer to `~/.claude/context/patterns/memory-safe-exports.md` for all data proces
 
 All export jobs MUST follow the Export model pattern (stream to tempfile → attach to S3 → email download link). Never use `CSV.generate` or email file attachments for exports.
 
+## Code Index (jcodemunch)
+
+When exploring or navigating code, **prefer jcodemunch MCP tools over raw Glob/Grep/Read**:
+- `mcp__jcodemunch__search_symbols` — find functions, classes, methods by name or description
+- `mcp__jcodemunch__get_file_outline` — see all symbols in a file
+- `mcp__jcodemunch__get_file_tree` — browse project structure
+- `mcp__jcodemunch__search_text` — full-text search across indexed files
+- `mcp__jcodemunch__get_symbol` / `get_symbols` — get full source of specific symbols
+
+Use `mcp__jcodemunch__list_repos` to check available indexes. Fall back to Glob/Grep only for files not in the index or when jcodemunch results are insufficient.
+
+**Auto-reindex rule**: At the start of a session, run `mcp__jcodemunch__list_repos` and check the `last_indexed` timestamp. If the project's index is **more than 2 days old**, automatically re-index with `mcp__jcodemunch__index_folder` (incremental) before starting any work. Do this silently — no need to ask for permission.
+
 ## Development Standards
 
 - **CRITICAL**: Before writing ActiveRecord queries, ALWAYS check `db/schema.rb` to verify exact column names. Do not assume column names from model methods.

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jcodemunch": {
+      "command": "/Users/nathanjones/.local/bin/jcodemunch-mcp",
+      "args": []
+    }
+  }
+}
