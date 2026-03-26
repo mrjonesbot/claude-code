@@ -6,11 +6,13 @@
   },
   "permissions": {
     "allow": [
+      "Read",
       "WebFetch",
       "Bash",
       "Edit",
       "Write",
-      "mcp__playwright__*"
+      "mcp__playwright__*",
+      "mcp__jcodemunch__*"
     ]
   },
   "model": "opus",
