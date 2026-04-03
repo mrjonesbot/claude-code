@@ -11,48 +11,7 @@ Two browser tools are available depending on the terminal environment. Use which
 
 ---
 
-### Option A: cmux Embedded Browser (preferred in cmux)
-
-Renders pages in a WebKit split pane alongside the terminal.
-
-**One-time setup** (already done if you're reading this):
-```bash
-defaults write com.cmuxterm.app socketControlMode -string "allowAll"
-```
-
-**CLI reference** — all commands use the Bash tool:
-```bash
-CMUX=/Applications/cmux.app/Contents/Resources/bin/cmux
-
-# Navigation
-$CMUX browser open <url>              # Open URL (creates browser pane if needed)
-$CMUX browser --surface <ref> goto <url>  # Navigate existing browser surface
-$CMUX browser back                    # Go back
-$CMUX browser forward                 # Go forward
-$CMUX browser reload                  # Reload page
-
-# Inspection
-$CMUX browser snapshot                # DOM/accessibility snapshot (best for understanding page state)
-$CMUX browser snapshot --compact      # Shorter snapshot
-$CMUX browser get url                 # Get current URL
-$CMUX browser get title               # Get page title
-$CMUX browser get text <selector>     # Get text content of element
-$CMUX browser eval <script>           # Run JavaScript
-
-# Interaction
-$CMUX browser click <selector>        # Click element
-$CMUX browser fill <selector> <text>  # Fill input field
-$CMUX browser type <selector> <text>  # Type into element
-$CMUX browser press <key>             # Press keyboard key
-
-# Waiting
-$CMUX browser wait --selector <css>   # Wait for element
-$CMUX browser wait --text <text>      # Wait for text to appear
-```
-
----
-
-### Option B: Playwright MCP (use in tmux / non-cmux terminals)
+### Playwright MCP (use in tmux / non-cmux terminals)
 
 Runs a headless Chromium browser via MCP tools. All tools are prefixed with `mcp__playwright__browser_`.
 
