@@ -84,7 +84,7 @@ Fix CI: <brief description of what was wrong>
 
 <one-line explanation of root cause and fix>
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 EOF
 )"
 ```

@@ -87,18 +87,32 @@ Refer to `~/.claude/context/patterns/memory-safe-exports.md` for all data proces
 
 All export jobs MUST follow the Export model pattern (stream to tempfile → attach to S3 → email download link). Never use `CSV.generate` or email file attachments for exports.
 
-## Code Index (jcodemunch)
+## Code Index (jcodemunch) — MANDATORY — READ THIS FIRST
 
-When exploring or navigating code, **prefer jcodemunch MCP tools over raw Glob/Grep/Read**:
-- `mcp__jcodemunch__search_symbols` — find functions, classes, methods by name or description
-- `mcp__jcodemunch__get_file_outline` — see all symbols in a file
-- `mcp__jcodemunch__get_file_tree` — browse project structure
-- `mcp__jcodemunch__search_text` — full-text search across indexed files
-- `mcp__jcodemunch__get_symbol` / `get_symbols` — get full source of specific symbols
+**STOP. Before using Read, Grep, or Glob to explore code, use jcodemunch instead.**
 
-Use `mcp__jcodemunch__list_repos` to check available indexes. Fall back to Glob/Grep only for files not in the index or when jcodemunch results are insufficient.
+This is non-negotiable. jcodemunch MCP tools are the PRIMARY method for ALL code lookup — reading files, searching code, exploring structure. Do NOT reach for Read/Grep/Glob/Explore agents out of habit. The only exception is reading a file you're about to edit (Edit tool requires a prior Read).
 
-**Auto-reindex rule**: At the start of a session, run `mcp__jcodemunch__list_repos` and check the `last_indexed` timestamp. If the project's index is **more than 2 days old**, automatically re-index with `mcp__jcodemunch__index_folder` (incremental) before starting any work. Do this silently — no need to ask for permission.
+**Instead of Read → use jcodemunch:**
+- `get_file_outline` — see all symbols in a file without reading the whole thing
+- `get_symbol` / `get_symbols` — retrieve only the specific function/method source you need
+- `get_file_content` — when you need the full file content from the index
+
+**Instead of Grep → use jcodemunch:**
+- `search_symbols` — find functions, classes, methods by name or description
+- `search_text` — full-text search across all indexed files
+
+**Instead of Glob/ls → use jcodemunch:**
+- `get_file_tree` — browse project structure with optional path prefix filter
+
+**Subagents must also use jcodemunch.** When spawning Explore or Plan agents, explicitly instruct them: "Use jcodemunch MCP tools (repo: nestingbird) for ALL code lookup. Do NOT use Read/Grep/Glob."
+
+**Fallback to Read/Grep/Glob ONLY when:**
+- The file is not in the index (new/untracked file)
+- You need to read a file immediately before editing it (Edit requires prior Read)
+- jcodemunch returns no results and you suspect the index is stale
+
+Use `list_repos` to check available indexes. Auto-reindex silently if the index is more than 2 days old.
 
 ## Development Standards
 

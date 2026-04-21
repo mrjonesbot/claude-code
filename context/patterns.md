@@ -18,6 +18,7 @@ This document indexes reusable patterns used throughout the application. Each pa
 | Pattern | File | Description |
 |---------|------|-------------|
 | [Memory-Safe Exports](patterns/memory-safe-exports.md) | `patterns/memory-safe-exports.md` | Disk-backed CSV/XML processing, Export model with S3 upload, streaming patterns for background jobs |
+| [Turbo Broadcasts](patterns/turbo-broadcasts.md) | `patterns/turbo-broadcasts.md` | Broadcasting Turbo Stream updates from background jobs with error handling, stream naming, and cable adapter requirements |
 
 ## Future Patterns to Document
 

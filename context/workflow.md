@@ -39,6 +39,7 @@ Runs a headless Chromium browser via MCP tools. All tools are prefixed with `mcp
 - Use `browser_snapshot` (accessibility tree) for understanding page state and getting element refs
 - Use `browser_take_screenshot` when you need a visual capture
 - If you get an error about the browser not being installed, call `mcp__playwright__browser_install` first
+- **CRITICAL — screenshot cleanup**: Never pass a bare `filename` to `browser_take_screenshot` (e.g., `"dashboard-check.png"`). This dumps files in the project root. Either omit `filename` entirely (auto-saves to `.playwright-mcp/`) or prefix with `.playwright-mcp/` (e.g., `".playwright-mcp/dashboard-check.png"`). A Stop hook auto-cleans `.playwright-mcp/` at session end.
 
 ---
 

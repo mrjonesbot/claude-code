@@ -41,7 +41,7 @@ Use a HEREDOC:
 git commit -m "$(cat <<'EOF'
 Your message here
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 EOF
 )"
 ```

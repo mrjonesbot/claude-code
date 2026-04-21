@@ -24,6 +24,10 @@
           {
             "type": "command",
             "command": "input=$(cat); project=$(echo \"$input\" | jq -r '.cwd | split(\"/\") | .[-1]'); session=$(echo \"$input\" | jq -r '.session_id[:8]'); terminal-notifier -title 'Claude Code' -message \"${project} — ${session}\" -activate com.mitchellh.ghostty -contentImage ~/.claude/claude-icon.png -sound default"
+          },
+          {
+            "type": "command",
+            "command": "input=$(cat); cwd=$(echo \"$input\" | jq -r '.cwd'); if [ -d \"${cwd}/.playwright-mcp\" ]; then find \"${cwd}/.playwright-mcp\" -type f -delete 2>/dev/null; fi"
           }
         ]
       }
@@ -46,5 +50,6 @@
   },
   "output_config": {
     "effort": "max"
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }

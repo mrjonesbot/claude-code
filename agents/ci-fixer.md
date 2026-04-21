@@ -75,7 +75,7 @@ Commit with descriptive message:
 git commit -m "$(cat <<'EOF'
 Fix CI: <summary of failures and fixes>
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 EOF
 )"
 ```
