@@ -15,7 +15,6 @@
       "mcp__jcodemunch__*"
     ]
   },
-  "model": "opus",
   "hooks": {
     "Stop": [
       {
@@ -27,7 +26,7 @@
           },
           {
             "type": "command",
-            "command": "input=$(cat); cwd=$(echo \"$input\" | jq -r '.cwd'); if [ -d \"${cwd}/.playwright-mcp\" ]; then find \"${cwd}/.playwright-mcp\" -type f -delete 2>/dev/null; fi"
+            "command": "input=$(cat); cwd=$(echo \"$input\" | jq -r '.cwd'); if [ -d \"${cwd}/.playwright-mcp\" ]; then find \"${cwd}/.playwright-mcp\" -type f -delete 2>/dev/null; fi; find \"${cwd}\" -maxdepth 1 -type f \\( -name '*.png' -o -name '*.jpeg' \\) ! -name 'favicon*' ! -name 'apple-touch-icon*' ! -name 'android-chrome*' -exec rm -f {} + 2>/dev/null"
           }
         ]
       }
@@ -40,8 +39,11 @@
   "enabledPlugins": {
     "stripe@claude-plugins-official": true,
     "ruby-lsp@ruby-skills": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "exa@exa": true
   },
+  "skipDangerousModePermissionPrompt": true,
   "preferences": {
     "tmuxSplitPanes": true
   },
@@ -49,7 +51,7 @@
     "lastShownTime": 1754093932628
   },
   "output_config": {
-    "effort": "max"
+    "effort": "xhigh"
   },
-  "skipDangerousModePermissionPrompt": true
+  "autoCompactEnabled": false
 }

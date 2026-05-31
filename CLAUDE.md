@@ -114,10 +114,16 @@ This is non-negotiable. jcodemunch MCP tools are the PRIMARY method for ALL code
 
 Use `list_repos` to check available indexes. Auto-reindex silently if the index is more than 2 days old.
 
+## UI Action Standards
+
+- **Icons over text for actions**: All clickable actions (Edit, Delete, Remove, etc.) in tables, lists, and row-level UI must use Heroicons outline SVGs (h-4 w-4) instead of text links. Include `title` attribute for accessibility, `cursor-pointer`, and `transition-colors` on hover.
+- **Standard action icon styles**: `text-neutral-cool-gray` base color. Edit/neutral actions hover to `text-brand-500`. Destructive actions (delete, remove) hover to `text-error-500`.
+
 ## Development Standards
 
 - **CRITICAL**: Before writing ActiveRecord queries, ALWAYS check `db/schema.rb` to verify exact column names. Do not assume column names from model methods.
 - **CRITICAL**: When adding a new controller action, you MUST add the corresponding authorization method to the policy file (e.g., `new_participant` action requires `new_participant?` in the policy).
+- **CRITICAL**: Every new controller MUST include `before_action :authenticate_user!` unless explicitly directed otherwise (e.g., public landing pages, webhooks). Without this guard, expired sessions cause `current_account` to be nil, resulting in 500 errors instead of a redirect to sign-in.
 - Views: Any javascript in `.html.erb` should use a Stimulus controller (`app/javascript/controllers`).
 
 ## Internationalization (i18n)
